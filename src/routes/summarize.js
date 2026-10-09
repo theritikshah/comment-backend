@@ -62,7 +62,9 @@ router.post('/', async (req, res, next) => {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: toPromptInput(comments) },
       ],
-      { temperature: 0.2 }
+      // gpt-oss is a reasoning model; low effort keeps token use (and rate-limit pressure) down
+      // and avoids runs where it spends its budget reasoning and returns no answer.
+      { temperature: 0.2, reasoning_effort: 'low' }
     );
 
     const dates = comments.map((c) => c.rawDate).filter(Boolean);

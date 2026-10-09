@@ -30,8 +30,14 @@ async function chat(messages, options = {}) {
       { model: groq.model, messages, ...options },
       { headers: { Authorization: `Bearer ${groq.apiKey}` } }
     );
-    return data.choices[0].message.content;
+    const choice = data.choices[0];
+    const content = (choice.message.content || '').trim();
+    if (!content) {
+      throw httpError(502, `Groq returned an empty response (finish_reason: ${choice.finish_reason})`);
+    }
+    return content;
   } catch (err) {
+    if (!err.isAxiosError) throw err;
     if (err.response) {
       const detail = err.response.data && (err.response.data.error || err.response.data);
       const message = typeof detail === 'string' ? detail : (detail && detail.message) || JSON.stringify(detail);
