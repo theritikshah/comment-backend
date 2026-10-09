@@ -1,5 +1,6 @@
 module.exports = {
   port: process.env.PORT || 3000,
+  authToken: process.env.API_AUTH_TOKEN,
   groq: {
     apiKey: process.env.GROQ_API_KEY,
     baseUrl: process.env.GROQ_BASE_URL || 'https://api.groq.com/openai/v1',
